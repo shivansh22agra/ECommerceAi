@@ -3,24 +3,37 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../constants.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   const SignUpForm({
     super.key,
     required this.formKey,
+    required this.onSaved,
   });
 
   final GlobalKey<FormState> formKey;
+  final Function(String email, String password) onSaved;
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: widget.formKey,
       child: Column(
         children: [
           TextFormField(
             onSaved: (emal) {
+              widget.onSaved(emailController.text, passwordController.text);
+              setState(() {});
               // Email
             },
+            controller: emailController,
             validator: emaildValidator.call,
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.emailAddress,
@@ -47,11 +60,13 @@ class SignUpForm extends StatelessWidget {
           ),
           const SizedBox(height: defaultPadding),
           TextFormField(
-            onSaved: (pass) {
-              // Password
+            onSaved: (emal) {
+              widget.onSaved(emailController.text, passwordController.text);
+              setState(() {});
             },
             validator: passwordValidator.call,
             obscureText: true,
+            controller: passwordController,
             decoration: InputDecoration(
               hintText: "Password",
               prefixIcon: Padding(
