@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shop/constants.dart';
 import 'package:shop/route/route_constants.dart';
-
 import 'components/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,6 +13,42 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  bool _isLoading = false;
+
+  String _email = '';
+  String _password = '';
+
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      print('____fnewrhnfnew $_email $_password');
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: 'shivansh.agrawal_cs21@gla.ac.in',
+        password: 'Werty@123',
+      );
+      print('____fnewrhnfnew 0 $userCredential');
+      if (userCredential.user != null) {
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          entryPointScreenRoute,
+          ModalRoute.withName(logInScreenRoute),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? 'Authentication failed')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +73,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: defaultPadding / 2),
                   const Text(
-                    "Log in with your data that you intered during your registration.",
+                    "Log in with your data that you entered during your registration.",
                   ),
                   const SizedBox(height: defaultPadding),
-                  LogInForm(formKey: _formKey),
+                  LogInForm(
+                    formKey: _formKey,
+                    onSaved: (email, password) {
+                      _email = email;
+                      _password = password;
+                    },
+                  ),
                   Align(
                     child: TextButton(
                       child: const Text("Forgot password"),
@@ -51,20 +93,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: size.height > 700
-                        ? size.height * 0.1
-                        : defaultPadding,
+                    height:
+                        size.height > 700 ? size.height * 0.1 : defaultPadding,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        Navigator.pushNamedAndRemoveUntil(
-                            context,
-                            entryPointScreenRoute,
-                            ModalRoute.withName(logInScreenRoute));
-                      }
-                    },
-                    child: const Text("Log in"),
+                    onPressed: _isLoading
+                        ? null
+                        : () {
+                            if (_formKey.currentState!.validate()) {
+                              _formKey.currentState!
+                                  .save(); // Save the form data
+                              _login(); // Call the login function
+                            }
+                          },
+                    child: _isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text("Log in"),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

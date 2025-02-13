@@ -7,9 +7,11 @@ class LogInForm extends StatelessWidget {
   const LogInForm({
     super.key,
     required this.formKey,
+    required this.onSaved,
   });
 
   final GlobalKey<FormState> formKey;
+  final Function(String email, String password) onSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +19,9 @@ class LogInForm extends StatelessWidget {
       key: formKey,
       child: Column(
         children: [
+          // Email Field
           TextFormField(
-            onSaved: (emal) {
-              // Email
-            },
-            validator: emaildValidator.call,
+            key: const Key('emailField'),
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
@@ -34,22 +34,27 @@ class LogInForm extends StatelessWidget {
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
-                      Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .color!
-                          .withOpacity(0.3),
-                      BlendMode.srcIn),
+                    Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .color!
+                        .withOpacity(0.3),
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
+            onSaved: (value) {
+              onSaved(value ?? '', ''); // Pass email value to the parent
+            },
           ),
           const SizedBox(height: defaultPadding),
+
+          // Password Field
           TextFormField(
-            onSaved: (pass) {
-              // Password
-            },
-            validator: passwordValidator.call,
+            key: const Key('passwordField'),
+            validator: passwordValidator
+                .call, // Ensure this function is defined in your constants.dart
             obscureText: true,
             decoration: InputDecoration(
               hintText: "Password",
@@ -61,15 +66,19 @@ class LogInForm extends StatelessWidget {
                   height: 24,
                   width: 24,
                   colorFilter: ColorFilter.mode(
-                      Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .color!
-                          .withOpacity(0.3),
-                      BlendMode.srcIn),
+                    Theme.of(context)
+                        .textTheme
+                        .bodyLarge!
+                        .color!
+                        .withOpacity(0.3),
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),
+            onSaved: (value) {
+              onSaved('', value ?? ''); // Pass password value to the parent
+            },
           ),
         ],
       ),
