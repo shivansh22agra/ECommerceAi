@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../../constants.dart';
 
-class LogInForm extends StatelessWidget {
+class LogInForm extends StatefulWidget {
   const LogInForm({
     super.key,
     required this.formKey,
@@ -14,15 +14,24 @@ class LogInForm extends StatelessWidget {
   final Function(String email, String password) onSaved;
 
   @override
+  State<LogInForm> createState() => _LogInFormState();
+}
+
+class _LogInFormState extends State<LogInForm> {
+  final TextEditingController emailController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+      key: widget.formKey,
       child: Column(
         children: [
           // Email Field
           TextFormField(
+            controller: emailController,
             key: const Key('emailField'),
-            textInputAction: TextInputAction.next,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               hintText: "Email address",
@@ -44,17 +53,26 @@ class LogInForm extends StatelessWidget {
                 ),
               ),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your email';
+              }
+              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                  .hasMatch(value)) {
+                return 'Please enter a valid email';
+              }
+              return null;
+            },
             onSaved: (value) {
-              onSaved(value ?? '', ''); // Pass email value to the parent
+              widget.onSaved(value ?? "", passwordController.text);
             },
           ),
           const SizedBox(height: defaultPadding),
 
           // Password Field
           TextFormField(
+            controller: passwordController,
             key: const Key('passwordField'),
-            validator: passwordValidator
-                .call, // Ensure this function is defined in your constants.dart
             obscureText: true,
             decoration: InputDecoration(
               hintText: "Password",
@@ -76,8 +94,27 @@ class LogInForm extends StatelessWidget {
                 ),
               ),
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter your password';
+              }
+              if (value.length < 6) {
+                return 'Password must be at least 6 characters';
+              }
+              return null;
+            },
             onSaved: (value) {
-              onSaved('', value ?? ''); // Pass password value to the parent
+              widget.onSaved(emailController.text, value ?? "");
+              setState(() {});
+            },
+            onFieldSubmitted: (value) {
+              // Save the form when the user presses "Enter" on the keyboard
+              if (widget.formKey.currentState!.validate()) {
+                widget.formKey.currentState!.save();
+                // Optionally, you can trigger the login function here
+                // For example, if you pass a callback for login:
+                // onLoginPressed();
+              }
             },
           ),
         ],

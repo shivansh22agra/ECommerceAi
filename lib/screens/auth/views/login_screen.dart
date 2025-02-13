@@ -20,18 +20,22 @@ class _LoginScreenState extends State<LoginScreen> {
   String _password = '';
 
   Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    _formKey.currentState!.save();
+
     setState(() {
       _isLoading = true;
     });
-
+    print('_fewbfhberibfrew $_email $_password');
     try {
-      print('____fnewrhnfnew $_email $_password');
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: 'shivansh.agrawal_cs21@gla.ac.in',
-        password: 'Werty@123',
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
       );
-      print('____fnewrhnfnew 0 $userCredential');
+
       if (userCredential.user != null) {
         Navigator.pushNamedAndRemoveUntil(
           context,
@@ -83,29 +87,21 @@ class _LoginScreenState extends State<LoginScreen> {
                       _password = password;
                     },
                   ),
-                  Align(
-                    child: TextButton(
-                      child: const Text("Forgot password"),
-                      onPressed: () {
-                        Navigator.pushNamed(
-                            context, passwordRecoveryScreenRoute);
-                      },
-                    ),
-                  ),
+                  // Align(
+                  //   child: TextButton(
+                  //     child: const Text("Forgot password"),
+                  //     onPressed: () {
+                  //       Navigator.pushNamed(
+                  //           context, passwordRecoveryScreenRoute);
+                  //     },
+                  //   ),
+                  // ),
                   SizedBox(
                     height:
                         size.height > 700 ? size.height * 0.1 : defaultPadding,
                   ),
                   ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : () {
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!
-                                  .save(); // Save the form data
-                              _login(); // Call the login function
-                            }
-                          },
+                    onPressed: _isLoading ? null : _login,
                     child: _isLoading
                         ? const CircularProgressIndicator()
                         : const Text("Log in"),

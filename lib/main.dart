@@ -27,9 +27,7 @@ class MyApp extends StatelessWidget {
       // Dark theme is inclided in the Full template
       themeMode: ThemeMode.light,
       onGenerateRoute: router.generateRoute,
-      initialRoute: FirebaseAuth.instance.currentUser == null
-          ? logInScreenRoute
-          : entryPointScreenRoute,
+      initialRoute: onbordingScreenRoute,
     );
   }
 }
