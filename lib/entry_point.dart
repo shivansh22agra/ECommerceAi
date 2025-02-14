@@ -17,8 +17,8 @@ class _EntryPointState extends State<EntryPoint> {
     DiscoverScreen(),
     BookmarkScreen(),
     // EmptyCartScreen(), // if Cart is empty
-    CartScreen(),
-    ProfileScreen(),
+    // CartScreen(),
+    // ProfileScreen(),
   ];
   int _currentIndex = 0;
 
@@ -52,32 +52,7 @@ class _EntryPointState extends State<EntryPoint> {
           height: 20,
           width: 100,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, searchScreenRoute);
-            },
-            icon: SvgPicture.asset(
-              "assets/icons/Search.svg",
-              height: 24,
-              colorFilter: ColorFilter.mode(
-                  Theme.of(context).textTheme.bodyLarge!.color!,
-                  BlendMode.srcIn),
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, notificationsScreenRoute);
-            },
-            icon: SvgPicture.asset(
-              "assets/icons/Notification.svg",
-              height: 24,
-              colorFilter: ColorFilter.mode(
-                  Theme.of(context).textTheme.bodyLarge!.color!,
-                  BlendMode.srcIn),
-            ),
-          ),
-        ],
+        actions: const [],
       ),
       // body: _pages[_currentIndex],
       body: PageTransitionSwitcher(
@@ -131,17 +106,17 @@ class _EntryPointState extends State<EntryPoint> {
                   svgIcon("assets/icons/Bookmark.svg", color: primaryColor),
               label: "Bookmark",
             ),
-            BottomNavigationBarItem(
-              icon: svgIcon("assets/icons/Bag.svg"),
-              activeIcon: svgIcon("assets/icons/Bag.svg", color: primaryColor),
-              label: "Cart",
-            ),
-            BottomNavigationBarItem(
-              icon: svgIcon("assets/icons/Profile.svg"),
-              activeIcon:
-                  svgIcon("assets/icons/Profile.svg", color: primaryColor),
-              label: "Profile",
-            ),
+            // BottomNavigationBarItem(
+            //   icon: svgIcon("assets/icons/Bag.svg"),
+            //   activeIcon: svgIcon("assets/icons/Bag.svg", color: primaryColor),
+            //   label: "Cart",
+            // ),
+            // BottomNavigationBarItem(
+            //   icon: svgIcon("assets/icons/Profile.svg"),
+            //   activeIcon:
+            //       svgIcon("assets/icons/Profile.svg", color: primaryColor),
+            //   label: "Profile",
+            // ),
           ],
         ),
       ),
